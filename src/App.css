@@ -1,0 +1,1114 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+.app-shell {
+  min-height: 100vh;
+  background: #f7f8f4;
+  color: #344b4a;
+  padding: 0 7%;
+}
+
+.topbar {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5ebe5;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: #315c58;
+}
+
+.brand-icon {
+  color: #d99c8b;
+  font-size: 25px;
+}
+
+.top-note {
+  color: #8a9a93;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.welcome {
+  max-width: 680px;
+  margin: 75px auto 65px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #a3a99b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.3px;
+  margin: 0 0 14px;
+}
+
+.welcome h1,
+.section-heading h2,
+.modal h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  color: #315c58;
+}
+
+.welcome h1 {
+  font-size: clamp(34px, 5vw, 52px);
+  margin: 0 0 17px;
+}
+
+.welcome > p:last-child {
+  color: #83918b;
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 510px;
+  margin: auto;
+}
+
+.aquarium-section {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.section-heading h2 {
+  font-size: 29px;
+  margin: 0;
+}
+
+.primary-button {
+  border: none;
+  border-radius: 30px;
+  background: #477d74;
+  color: white;
+  padding: 13px 22px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.primary-button:hover {
+  background: #35675f;
+  transform: translateY(-2px);
+}
+
+.empty-aquarium {
+  min-height: 320px;
+  border: 1px solid #e5ebe5;
+  border-radius: 22px;
+  background: linear-gradient(150deg, #eaf3ed, #e6f0f1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 35px;
+}
+
+.empty-fish {
+  font-size: 58px;
+  margin-bottom: 12px;
+  animation: swim 3s ease-in-out infinite;
+}
+
+.empty-aquarium h3 {
+  font-family: 'Playfair Display', serif;
+  color: #315c58;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.empty-aquarium p {
+  max-width: 390px;
+  color: #82938c;
+  line-height: 1.7;
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+
+.fish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.fish-card {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e5ebe5;
+  border-radius: 19px;
+  background: #fff;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fish-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px #45665c12;
+}
+
+.fish-scene {
+  height: 150px;
+  background: linear-gradient(145deg, #e7f2ed, #dcebed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.fish-scene::before,
+.fish-scene::after {
+  content: '';
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ffffff80;
+  border-radius: 50%;
+}
+
+.fish-scene::before {
+  left: -65px;
+  top: 65px;
+}
+
+.fish-scene::after {
+  right: -70px;
+  top: -75px;
+}
+
+.fish-emoji {
+  font-size: 58px;
+  z-index: 1;
+  animation: swim 3s ease-in-out infinite;
+}
+
+.fish-bubble {
+  position: absolute;
+  right: 28%;
+  top: 35px;
+  color: #fff;
+  font-size: 28px;
+}
+
+.mood-hungry .fish-emoji,
+.mood-sick .fish-emoji {
+  filter: saturate(0.55);
+}
+
+.mood-sick .fish-scene {
+  background: linear-gradient(145deg, #e8e9e5, #e3e9e8);
+}
+
+.fish-info {
+  padding: 18px 20px 20px;
+}
+
+.fish-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fish-name-row h3 {
+  color: #3e5b55;
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.mood-label {
+  font-size: 10px;
+  text-transform: capitalize;
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #e9f2e9;
+  color: #65866d;
+}
+
+.mood-label.sleepy {
+  background: #f5f0df;
+  color: #a18d5b;
+}
+
+.mood-label.hungry {
+  background: #f8ebdf;
+  color: #b77e53;
+}
+
+.mood-label.sick {
+  background: #e8eded;
+  color: #778d91;
+}
+
+.fish-info > p {
+  font-size: 12px;
+  color: #95a19b;
+  margin: 8px 0 17px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: #edf0eb;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #8ab3a0;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  display: block;
+  text-align: right;
+  font-size: 10px;
+  color: #94a29b;
+  margin-top: 7px;
+}
+
+.bottom-section {
+  max-width: 1100px;
+  margin: 45px auto 75px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.bottom-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 23px;
+  background: #fff;
+  border: 1px solid #e8ece6;
+  border-radius: 17px;
+}
+
+.bottom-icon {
+  font-size: 25px;
+}
+
+.bottom-card h3 {
+  margin: 0 0 7px;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: #46645c;
+}
+
+.bottom-card p {
+  margin: 0;
+  color: #91a098;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.released-fish {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 23px;
+}
+
+footer {
+  text-align: center;
+  color: #a5b0a8;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 25px 0 35px;
+}
+
+footer span {
+  color: #d99c8b;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #253b3880;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 23px;
+  padding: 38px;
+  box-shadow: 0 20px 80px #1e39352b;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 19px;
+  border: none;
+  background: none;
+  color: #92a098;
+  font-size: 27px;
+  cursor: pointer;
+}
+
+.modal h2 {
+  font-size: 29px;
+  margin: 0 0 10px;
+}
+
+.modal-description {
+  color: #91a098;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 25px;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal label {
+  color: #62776e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.modal input:not([type="checkbox"]),
+.modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #e3eae3;
+  border-radius: 10px;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: #405b53;
+  background: #fbfcfa;
+  margin-bottom: 10px;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+  border-color: #8ab3a0;
+}
+
+.modal textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+.full-button {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.project-modal {
+  max-width: 510px;
+}
+
+.detail-fish {
+  text-align: center;
+  font-size: 65px;
+  margin: 0 0 15px;
+  animation: swim 3s ease-in-out infinite;
+}
+
+.detail-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 28px;
+}
+
+.detail-progress .progress-track {
+  flex: 1;
+}
+
+.detail-progress > span {
+  color: #789087;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.task-section {
+  margin-top: 23px;
+}
+
+.task-section h3 {
+  color: #48675d;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  margin: 0 0 12px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eff1ed;
+  color: #6d8077 !important;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+
+.task-row input {
+  accent-color: #6d9b86;
+}
+
+.task-row .completed {
+  text-decoration: line-through;
+  color: #aab4ad;
+}
+
+.add-item-form {
+  display: flex;
+  flex-direction: row !important;
+  gap: 8px !important;
+  margin-top: 12px;
+}
+
+.add-item-form input {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.add-item-form button {
+  width: 43px;
+  border: none;
+  border-radius: 10px;
+  background: #e6f0e9;
+  color: #56806c;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.care-note {
+  margin-top: 25px;
+  padding: 14px;
+  background: #f0f6f0;
+  color: #6c8979;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.delete-button {
+  display: block;
+  margin: 22px auto 0;
+  border: none;
+  background: none;
+  color: #b38a82;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+@keyframes swim {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@media (max-width: 650px) {
+  .app-shell {
+    padding: 0 5%;
+  }
+
+  .top-note {
+    display: none;
+  }
+
+  .welcome {
+    margin: 55px auto 45px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .section-heading h2 {
+    font-size: 24px;
+  }
+
+  .section-heading .primary-button {
+    padding: 11px 15px;
+    white-space: nowrap;
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    padding: 30px 23px;
+  }
+}
+
+
+/* Shared swimming aquarium */
+
+.swimming-aquarium {
+  position: relative;
+  width: 100%;
+  height: 430px;
+  overflow: hidden;
+  border: 1px solid #dce9e4;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 20% 15%, #ffffff80, transparent 35%),
+    linear-gradient(160deg, #e7f3ed 0%, #d9ebeb 50%, #dce9ef 100%);
+}
+
+.aquarium-caption {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #8ba69b;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.aquarium-caption span {
+  color: #d3a99a;
+  margin: 0 8px;
+}
+
+.swimming-fish {
+  --start-y: 20%;
+  position: absolute;
+  left: -10%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  animation-name: fish-swim-across;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.swimming-fish:hover {
+  z-index: 5;
+}
+
+.swimming-fish-emoji {
+  display: block;
+  font-size: 48px;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 5px 4px #547c6c25);
+}
+
+.swimming-fish:hover .swimming-fish-emoji {
+  transform: scale(1.35);
+}
+
+.swimming-fish-name {
+  opacity: 0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #ffffffdd;
+  color: #55766b;
+  font-size: 10px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.swimming-fish:hover .swimming-fish-name {
+  opacity: 1;
+}
+
+.swimming-fish.mood-sleepy .swimming-fish-emoji {
+  filter: saturate(0.75);
+}
+
+.swimming-fish.mood-hungry .swimming-fish-emoji,
+.swimming-fish.mood-sick .swimming-fish-emoji {
+  filter: saturate(0.45);
+}
+
+.water-decoration {
+  position: absolute;
+  border: 1px solid #ffffff80;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubble-float 6s ease-in-out infinite;
+}
+
+.bubble-one {
+  width: 22px;
+  height: 22px;
+  left: 15%;
+  bottom: 15%;
+}
+
+.bubble-two {
+  width: 13px;
+  height: 13px;
+  left: 70%;
+  bottom: 25%;
+  animation-delay: -2s;
+}
+
+.bubble-three {
+  width: 30px;
+  height: 30px;
+  right: 12%;
+  bottom: 10%;
+  animation-delay: -4s;
+}
+
+/* Path 1: Gentle rolling waves */
+.swimming-fish.path-0 {
+  animation-name: fish-wave;
+}
+
+/* Path 2: Dipping and rising */
+.swimming-fish.path-1 {
+  animation-name: fish-dive;
+}
+
+/* Path 3: Gentle drifting */
+.swimming-fish.path-2 {
+  animation-name: fish-drift;
+}
+
+@keyframes fish-wave {
+  0% {
+    left: -10%;
+    top: var(--start-y);
+    transform: scaleX(1);
+  }
+  25% {
+    top: calc(var(--start-y) - 35px);
+  }
+  50% {
+    top: calc(var(--start-y) + 15px);
+    transform: scaleX(-1);
+  }
+  75% {
+    top: calc(var(--start-y) - 20px);
+  }
+  100% {
+    left: 88%;
+    top: var(--start-y);
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish-dive {
+  0% {
+    left: -10%;
+    top: var(--start-y);
+    transform: scaleX(1);
+  }
+  30% {
+    top: calc(var(--start-y) + 45px);
+  }
+  65% {
+    top: calc(var(--start-y) - 30px);
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 88%;
+    top: calc(var(--start-y) + 10px);
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish-drift {
+  0% {
+    left: -10%;
+    top: var(--start-y);
+    transform: scaleX(1);
+  }
+  35% {
+    top: calc(var(--start-y) - 15px);
+  }
+  70% {
+    top: calc(var(--start-y) + 40px);
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 88%;
+    top: calc(var(--start-y) - 10px);
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes bubble-float {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-22px);
+    opacity: 0.9;
+  }
+}
+
+@media (max-width: 650px) {
+  .swimming-aquarium {
+    height: 390px;
+  }
+
+  .swimming-fish-emoji {
+    font-size: 38px;
+  }
+
+  .swimming-fish-name {
+    font-size: 9px;
+  }
+}
+
+/* Sandy aquarium floor */
+.aquarium-sand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+  background: linear-gradient(
+    to bottom,
+    #e9d5a6,
+    #d8bd87
+  );
+  border-radius: 0 0 18px 18px;
+  z-index: 3;
+}
+
+/* Coral decorations */
+.aquarium-coral {
+  position: absolute;
+  bottom: 38px;
+  font-size: 48px;
+  z-index: 4;
+}
+
+.coral-left {
+  left: 7%;
+}
+
+.coral-right {
+  right: 7%;
+  font-size: 55px;
+}
+
+/* Seagrass */
+.seagrass {
+  position: absolute;
+  bottom: 38px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 100px;
+  z-index: 4;
+}
+
+.seagrass-left {
+  left: 20%;
+}
+
+.seagrass-right {
+  right: 20%;
+}
+
+.seagrass span {
+  display: block;
+  width: 9px;
+  height: 65px;
+  background: linear-gradient(to top, #477c54, #83b77b);
+  border-radius: 100% 0 100% 0;
+  transform-origin: bottom center;
+  animation: grass-sway 2.5s ease-in-out infinite alternate;
+}
+
+.seagrass span:nth-child(2) {
+  height: 85px;
+  animation-delay: -0.7s;
+}
+
+.seagrass span:nth-child(3) {
+  height: 55px;
+  animation-delay: -1.2s;
+}
+
+.seagrass span:nth-child(4) {
+  height: 75px;
+  animation-delay: -1.7s;
+}
+
+.seagrass span:nth-child(5) {
+  height: 60px;
+  animation-delay: -0.4s;
+}
+
+@keyframes grass-sway {
+  from {
+    transform: rotate(-13deg);
+  }
+  to {
+    transform: rotate(13deg);
+  }
+}
+
+/* Floating bubbles */
+.aquarium-bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.aquarium-bubbles span {
+  position: absolute;
+  bottom: -15px;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  animation: bubble-rise 6s linear infinite;
+}
+
+.aquarium-bubbles span:nth-child(3n) {
+  width: 13px;
+  height: 13px;
+}
+
+.aquarium-bubbles span:nth-child(4n) {
+  width: 6px;
+  height: 6px;
+}
+
+@keyframes bubble-rise {
+  from {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(-450px) translateX(18px);
+    opacity: 0;
+  }
+}
+
+
+/* Fish growth card in project popup */
+.fish-growth-card {
+  background: #f0f7f3;
+  border: 1px solid #dcebe1;
+  border-radius: 18px;
+  padding: 18px;
+  margin: 18px 0;
+}
+
+.growth-stage-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.growth-stage-emoji {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.growth-stage-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #779183;
+  margin: 0 0 4px;
+}
+
+.growth-stage-header h3 {
+  margin: 0 0 4px;
+  color: #365c4a;
+}
+
+.growth-stage-header p:last-child {
+  margin: 0;
+  font-size: 13px;
+  color: #71877a;
+}
+
+.growth-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #587365;
+  margin-bottom: 8px;
+}
+
+.growth-progress-info strong {
+  color: #365c4a;
+  font-size: 15px;
+}
+
+.growth-progress-track {
+  width: 100%;
+  height: 11px;
+  background: #dce9df;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.growth-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9bc9a7, #5b9d79);
+  border-radius: 20px;
+  transition: width 0.5s ease;
+}
+
+.growth-encouragement {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #789184;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Unhatched eggs resting on the sand */
+.swimming-fish.egg {
+  left: calc(8% + var(--egg-offset, 0%));
+  top: auto;
+  bottom: 2px;
+  z-index: 5;
+
+  animation-name: egg-shimmy;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+
+  transform-origin: bottom center;
+}
+
+/* A little wiggle, followed by a rest */
+@keyframes egg-shimmy {
+  0%, 65%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+
+  70% {
+    transform: rotate(-8deg) translateY(-2px);
+  }
+
+  75% {
+    transform: rotate(8deg) translateY(-2px);
+  }
+
+  80% {
+    transform: rotate(-6deg) translateY(0);
+  }
+
+  85% {
+    transform: rotate(5deg) translateY(0);
+  }
+
+  90% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+.aquarium-management {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 35px;
+}
+
+.management-button {
+  padding: 10px 16px;
+  border: 1px solid #dce7df;
+  border-radius: 10px;
+  background: #f7faf7;
+  color: #71877a;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.management-button:hover:not(:disabled) {
+  background: #edf4ee;
+  transform: translateY(-2px);
+}
+
+.clear-finished-button {
+  color: #a17e78;
+  border-color: #eadfdd;
+}
+
+.clear-finished-button:hover:not(:disabled) {
+  background: #faf0ee;
+}
+
+.management-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.collection-fish-button {
+  border: none;
+  background: transparent;
+  font-size: 30px;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s ease;
+}
+
+.collection-fish-button:hover {
+  transform: translateY(-5px) scale(1.15);
+}
