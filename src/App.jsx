@@ -900,60 +900,20 @@ function App() {
             </p>
             
             <div className="project-privacy">
-              <h3>Who can see this project?</h3>
-
-              <div className="privacy-options">
-                <label className={`privacy-option private-option ${
-                  activeProject.visibility === "private" ? "selected" : ""
-                }`}>
-                  <input
-                    type="radio"
-                    name="project-visibility"
-                    value="private"
-                    checked={activeProject.visibility === "private"}
-                    onChange={() =>
-                      changeProjectVisibility(activeProject.id, "private")
-                    }
-                  />
-                  <span className="privacy-icon">🔒</span>
-                  <strong>Private</strong>
-                  <small>Only you</small>
-                </label>
-
-                <label className={`privacy-option friends-option ${
-                  activeProject.visibility === "friends" ? "selected" : ""
-                }`}>
-                  <input
-                    type="radio"
-                    name="project-visibility"
-                    value="friends"
-                    checked={activeProject.visibility === "friends"}
-                    onChange={() =>
-                      changeProjectVisibility(activeProject.id, "friends")
-                    }
-                  />
-                  <span className="privacy-icon">🐟</span>
-                  <strong>Friends</strong>
-                  <small>Accepted friends</small>
-                </label>
-
-                <label className={`privacy-option public-option ${
-                  activeProject.visibility === "public" ? "selected" : ""
-                }`}>
-                  <input
-                    type="radio"
-                    name="project-visibility"
-                    value="public"
-                    checked={activeProject.visibility === "public"}
-                    onChange={() =>
-                      changeProjectVisibility(activeProject.id, "public")
-                    }
-                  />
-                  <span className="privacy-icon">🌎</span>
-                  <strong>Public</strong>
-                  <small>All signed-in users</small>
-                </label>
-              </div>
+              <label htmlFor="project-visibility">
+                Who can see this project?
+              </label>
+              <select
+                id="project-visibility"
+                value={activeProject.visibility || "private"}
+                onChange={(event) =>
+                  changeProjectVisibility(activeProject.id, event.target.value)
+                }
+              >
+                <option value="private">🔒 Private — only you</option>
+                <option value="friends">🐟 Friends — accepted friends</option>
+                <option value="public">🫧 Public — all signed-in users</option>
+              </select>
             </div>
 
         <div className="fish-growth-card">

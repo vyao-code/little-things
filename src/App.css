@@ -1382,3 +1382,34 @@ footer span {
   color: #789090;
   font-size: 0.9rem;
 }
+
+.project-privacy {
+  margin: 20px 0;
+}
+
+.project-privacy label {
+  display: block;
+  margin-bottom: 8px;
+  color: #66817f;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.project-privacy select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid #d5e7e3;
+  border-radius: 14px;
+  background-color: #f2f8f6;
+  color: #527571;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.project-privacy select:focus {
+  border-color: #a8ccc1;
+  box-shadow: 0 0 0 3px rgba(168, 204, 193, 0.2);
+}
