@@ -1,0 +1,258 @@
+
+.friends-section {
+  max-width: 1100px;
+  width: 100%;
+  margin: 36px auto;
+  padding: 32px;
+  background: #fffdfb;
+  border: 1px solid #eee8e3;
+  border-radius: 24px;
+  box-shadow: 0 8px 28px rgba(80, 100, 110, 0.06);
+  box-sizing: border-box;
+}
+
+.friends-section .eyebrow {
+  color: #91aaa8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.friends-section h2 {
+  color: #526f70;
+  font-size: 1.8rem;
+  margin: 0 0 8px;
+}
+
+.friends-section h3 {
+  color: #526f70;
+  font-size: 1.2rem;
+  margin: 0 0 18px;
+}
+
+.friends-section p {
+  color: #849393;
+  line-height: 1.6;
+}
+
+.incoming-requests {
+  margin-bottom: 36px;
+  padding: 24px;
+  background: #f5f9f7;
+  border-radius: 18px;
+}
+
+.friend-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e9efeb;
+  border-radius: 16px;
+}
+
+.friend-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  background: #eaf4f1;
+  border-radius: 50%;
+  font-size: 1.4rem;
+}
+
+.friend-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+}
+
+.friend-info strong {
+  color: #526b6b;
+}
+
+.friend-info span,
+.friend-info small {
+  color: #91a09e;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.friend-card button,
+.friends-section form button {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #dcece5;
+  color: #526f66;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.friend-card button:hover,
+.friends-section form button:hover {
+  background: #c9e2d7;
+  transform: translateY(-1px);
+}
+
+.request-actions button:last-child {
+  background: #f3eeee;
+  color: #8b7777;
+}
+
+.request-actions button:last-child:hover {
+  background: #eadfdf;
+}
+
+.friends-section form {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.friends-section form input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 16px;
+  border: 1px solid #e3eae6;
+  border-radius: 12px;
+  background: white;
+  color: #526b6b;
+  font: inherit;
+  outline: none;
+}
+
+.friends-section form input:focus {
+  border-color: #a8c9bb;
+  box-shadow: 0 0 0 3px rgba(168, 201, 187, 0.18);
+}
+
+@media (max-width: 700px) {
+  .friends-section {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .friend-results {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-card {
+    flex-wrap: wrap;
+  }
+
+  .request-actions {
+    width: 100%;
+    margin-left: 60px;
+  }
+}
+
+@media (max-width: 420px) {
+  .friends-section form {
+    flex-direction: column;
+  }
+
+  .friends-section form button {
+    width: 100%;
+  }
+}
+
+.clickable-friend {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable-friend:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(80, 110, 100, 0.1);
+}
+
+.back-to-friends {
+  border: none;
+  background: #eef5f0;
+  color: #668579;
+  padding: 11px 18px;
+  border-radius: 30px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 28px;
+}
+
+.back-to-friends:hover {
+  background: #dcece3;
+}
+
+.friend-aquarium-header {
+  text-align: center;
+  padding: 20px 0 35px;
+}
+
+.friend-aquarium-header .friend-avatar {
+  margin: 0 auto 16px;
+  width: 70px;
+  height: 70px;
+  font-size: 2rem;
+}
+
+.friend-aquarium-header h2 {
+  margin-top: 10px;
+}
+
+.friend-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.friend-project-card {
+  background: #f5f9f6;
+  border: 1px solid #e5eee8;
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.friend-project-card h3 {
+  margin: 10px 0;
+}
+
+.project-fish {
+  font-size: 2.5rem;
+}
+
+.friend-project-details {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  color: #789187;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+  .friend-project-grid {
+    grid-template-columns: 1fr;
+  }
+}

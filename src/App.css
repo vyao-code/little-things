@@ -1112,3 +1112,240 @@ footer span {
 .collection-fish-button:hover {
   transform: translateY(-5px) scale(1.15);
 }
+
+
+/* ================================
+   Authentication / Login Page
+================================ */
+
+.auth-screen {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 45px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 15% 15%, #e8f1e9 0%, transparent 40%),
+    radial-gradient(ellipse at 85% 85%, #e5eff0 0%, transparent 40%),
+    #f7f8f4;
+  color: #344b4a;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 45px 42px;
+  border: 1px solid #e5ebe5;
+  border-radius: 25px;
+  background: #ffffffed;
+  box-shadow: 0 18px 55px #45665c12;
+  text-align: center;
+}
+
+.auth-card h1 {
+  margin: 0 0 12px;
+  color: #315c58;
+  font-family: 'Playfair Display', serif;
+  font-size: 39px;
+  font-weight: 500;
+}
+
+.auth-card > p:not(.eyebrow):not(.auth-message):not(.auth-footer) {
+  margin: 0 auto 28px;
+  color: #899990;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 5px;
+  margin-bottom: 27px;
+  border-radius: 30px;
+  background: #f0f4ef;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 11px;
+  border: none;
+  border-radius: 25px;
+  background: transparent;
+  color: #819188;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tabs button:hover {
+  background: #ffffff;
+  color: #477d74;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  text-align: left;
+}
+
+.auth-card form label {
+  margin-top: 8px;
+  color: #62776e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.auth-card form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 15px;
+  border: 1px solid #e3eae3;
+  border-radius: 11px;
+  outline: none;
+  background: #fbfcfa;
+  color: #405b53;
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-card form input:focus {
+  border-color: #8ab3a0;
+  box-shadow: 0 0 0 3px #8ab3a01a;
+}
+
+.auth-card form input::placeholder {
+  color: #b0bbb3;
+}
+
+.auth-card .full-button {
+  margin-top: 17px;
+  padding: 14px 20px;
+}
+
+.auth-message {
+  margin: 20px 0 0;
+  padding: 13px;
+  border-radius: 11px;
+  background: #edf5ee;
+  color: #63836e;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.auth-footer {
+  margin: 28px 0 0;
+  color: #a1ada4;
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Small logout button */
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-button {
+  padding: 8px 15px;
+  border: 1px solid #dce7df;
+  border-radius: 20px;
+  background: transparent;
+  color: #71877a;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background: #edf4ee;
+  color: #477d74;
+  border-color: #b9d0c0;
+}
+
+@media (max-width: 500px) {
+  .auth-screen {
+    padding: 25px 16px;
+  }
+
+  .auth-card {
+    padding: 35px 25px;
+  }
+
+  .auth-card h1 {
+    font-size: 34px;
+  }
+
+  .topbar-right {
+    gap: 0;
+  }
+}
+
+
+/* Main navigation */
+.main-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 28px auto 36px;
+  padding: 7px;
+  background: #f0f5f1;
+  border: 1px solid #e4ece6;
+  border-radius: 50px;
+  box-shadow: 0 4px 14px rgba(80, 110, 100, 0.06);
+}
+
+/* Navigation buttons */
+.main-navigation button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 40px;
+  background: transparent;
+  color: #829891;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Hover effect */
+.main-navigation button:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: #58766b;
+}
+
+/* Selected tab */
+.main-navigation button.active {
+  background: #ffffff;
+  color: #52776a;
+  box-shadow: 0 3px 9px rgba(80, 110, 100, 0.12);
+}
+
+/* Small screen adjustments */
+@media (max-width: 480px) {
+  .main-navigation {
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+  }
+
+  .main-navigation button {
+    flex: 1;
+    padding: 11px 12px;
+    font-size: 0.85rem;
+  }
+}

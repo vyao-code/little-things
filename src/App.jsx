@@ -1,8 +1,39 @@
-
 import { useEffect, useState } from "react";
 import "./App.css";
+import Auth from "./Auth";
+import { supabase } from "./lib/supabaseClient";
+import Friends from "./Friends";
 
 const starterFish = ["🐠", "🐟", "🐡", "🪼", "🐬", "🦀"];
+
+function formatProjectFromDatabase(project, items = []) {
+  return {
+    id: project.id,
+    name: project.title,
+    description: project.description || "",
+    fish: project.fish,
+    createdAt: new Date(project.created_at).getTime(),
+    lastFed: new Date(project.last_fed).getTime(),
+    releasedAt: project.released_at
+      ? new Date(project.released_at).getTime()
+      : null,
+    visibility: project.visibility,
+    tasks: items
+      .filter((item) => item.item_type === "task")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        done: item.is_completed,
+      })),
+    milestones: items
+      .filter((item) => item.item_type === "milestone")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        done: item.is_completed,
+      })),
+  };
+}
 
 function getMood(project) {
   const daysSinceFed =
@@ -58,21 +89,97 @@ function getGrowthStage(progress) {
 }
 
 function App() {
-  const [projects, setProjects] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("little-things-projects")) || [];
-    } catch {
-      return [];
-    }
-  });
+    const [user, setUser] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true);
+    const [newVisibility, setNewVisibility] = useState("private");
+    const [activeTab, setActiveTab] = useState("aquarium");
 
-  const [released, setReleased] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("little-things-released")) || [];
-    } catch {
-      return [];
+    useEffect(() => {
+      let mounted = true;
+
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (mounted) {
+          setUser(session?.user ?? null);
+          setAuthLoading(false);
+        }
+      });
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+        setAuthLoading(false);
+      });
+
+      return () => {
+        mounted = false;
+        subscription.unsubscribe();
+      };
+    }, []);
+
+  const [projects, setProjects] = useState([]);
+  const [released, setReleased] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [projectsError, setProjectsError] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadProjects() {
+      setProjectsLoading(true);
+      setProjectsError("");
+
+      try {
+        // Get this user's projects
+        const { data: projectData, error: projectError } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("owner_id", user.id)
+          .order("created_at", { ascending: true });
+
+        if (projectError) throw projectError;
+
+        // Get the tasks and milestones for those projects
+        let itemData = [];
+
+        if (projectData.length > 0) {
+          const projectIds = projectData.map((project) => project.id);
+
+          const { data, error: itemError } = await supabase
+            .from("project_items")
+            .select("*")
+            .in("project_id", projectIds);
+
+          if (itemError) throw itemError;
+
+          itemData = data;
+        }
+
+        // Convert database records into the format our aquarium uses
+        const formattedProjects = projectData.map((project) =>
+          formatProjectFromDatabase(
+            project,
+            itemData.filter((item) => item.project_id === project.id)
+          )
+        );
+
+        setProjects(
+          formattedProjects.filter((project) => !project.releasedAt)
+        );
+
+        setReleased(
+          formattedProjects.filter((project) => project.releasedAt)
+        );
+      } catch (error) {
+        console.error("Error loading projects:", error);
+        setProjectsError(error.message);
+      } finally {
+        setProjectsLoading(false);
+      }
     }
-  });
+
+    loadProjects();
+  }, [user]);
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [showNewProject, setShowNewProject] = useState(false);
@@ -81,33 +188,62 @@ function App() {
   const [newTask, setNewTask] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
 
-  useEffect(() => {
-    localStorage.setItem("little-things-projects", JSON.stringify(projects));
-  }, [projects]);
+  async function changeProjectVisibility(projectId, visibility) {
+    try {
+      const { error } = await supabase
+        .from("projects")
+        .update({ visibility })
+        .eq("id", projectId);
 
-  useEffect(() => {
-    localStorage.setItem("little-things-released", JSON.stringify(released));
-  }, [released]);
+      if (error) throw error;
 
-  function createProject(event) {
+      updateProject(projectId, (project) => ({
+        ...project,
+        visibility,
+      }));
+    } catch (error) {
+      console.error("Error updating project privacy:", error);
+      alert("Couldn't update project privacy: " + error.message);
+    }
+  }
+
+  async function createProject(event) {
     event.preventDefault();
+
     if (!newName.trim()) return;
 
-    const project = {
-      id: crypto.randomUUID(),
-      name: newName.trim(),
-      description: newDescription.trim(),
-      fish: starterFish[Math.floor(Math.random() * starterFish.length)],
-      createdAt: Date.now(),
-      lastFed: Date.now(),
-      tasks: [],
-      milestones: [],
-    };
+    const fish = starterFish[
+      Math.floor(Math.random() * starterFish.length)
+    ];
 
-    setProjects((current) => [...current, project]);
-    setNewName("");
-    setNewDescription("");
-    setShowNewProject(false);
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .insert({
+          owner_id: user.id,
+          title: newName.trim(),
+          description: newDescription.trim(),
+          fish,
+          status: "active",
+          visibility: newVisibility,
+          last_fed: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newProject = formatProjectFromDatabase(data);
+
+      setProjects((current) => [...current, newProject]);
+
+      setNewName("");
+      setNewDescription("");
+      setShowNewProject(false);
+    } catch (error) {
+      console.error("Error creating project:", error);
+      alert("Couldn't save your project: " + error.message);
+    }
   }
 
   function updateProject(id, updater) {
@@ -118,72 +254,151 @@ function App() {
     );
   }
 
-  function addTask(event) {
+  async function addTask(event) {
     event.preventDefault();
+
     if (!newTask.trim() || !selectedProject) return;
 
-    updateProject(selectedProject.id, (project) => ({
-      ...project,
-      tasks: [
-        ...project.tasks,
-        { id: crypto.randomUUID(), title: newTask.trim(), done: false },
-      ],
-    }));
+    try {
+      const { data, error } = await supabase
+        .from("project_items")
+        .insert({
+          project_id: selectedProject.id,
+          item_type: "task",
+          title: newTask.trim(),
+          is_completed: false,
+        })
+        .select()
+        .single();
 
-    setNewTask("");
+      if (error) throw error;
+
+      updateProject(selectedProject.id, (project) => ({
+        ...project,
+        tasks: [
+          ...project.tasks,
+          {
+            id: data.id,
+            title: data.title,
+            done: data.is_completed,
+          },
+        ],
+      }));
+
+      setNewTask("");
+    } catch (error) {
+      console.error("Error adding task:", error);
+      alert("Couldn't save your task: " + error.message);
+    }
   }
 
-  function addMilestone(event) {
+  async function addMilestone(event) {
     event.preventDefault();
+
     if (!newMilestone.trim() || !selectedProject) return;
 
-    updateProject(selectedProject.id, (project) => ({
+    try {
+      const { data, error } = await supabase
+        .from("project_items")
+        .insert({
+          project_id: selectedProject.id,
+          item_type: "milestone",
+          title: newMilestone.trim(),
+          is_completed: false,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      updateProject(selectedProject.id, (project) => ({
+        ...project,
+        milestones: [
+          ...project.milestones,
+          {
+            id: data.id,
+            title: data.title,
+            done: data.is_completed,
+          },
+        ],
+      }));
+
+      setNewMilestone("");
+    } catch (error) {
+      console.error("Error adding milestone:", error);
+      alert("Couldn't save your milestone: " + error.message);
+    }
+  }
+
+  async function toggleItem(projectId, type, itemId) {
+    const project = projects.find((p) => p.id === projectId);
+    if (!project) return;
+
+    const updated = {
       ...project,
-      milestones: [
-        ...project.milestones,
-        { id: crypto.randomUUID(), title: newMilestone.trim(), done: false },
-      ],
-    }));
+      [type]: project[type].map((item) =>
+        item.id === itemId ? { ...item, done: !item.done } : item
+      ),
+      lastFed: Date.now(),
+    };
 
-    setNewMilestone("");
+    const progress = getProgress(updated);
+
+    const isCompleted =
+      progress === 100 &&
+      updated.tasks.length + updated.milestones.length > 0;
+
+    const now = new Date().toISOString();
+
+    try {
+      // Save the checkbox change
+      const item = updated[type].find((item) => item.id === itemId);
+
+      const { error: itemError } = await supabase
+        .from("project_items")
+        .update({ is_completed: item.done })
+        .eq("id", itemId);
+
+      if (itemError) throw itemError;
+
+      // Update the project's care date and completion status
+      const projectUpdate = {
+        last_fed: now,
+      };
+
+      if (isCompleted) {
+        projectUpdate.status = "completed";
+        projectUpdate.released_at = now;
+      }
+
+      const { error: projectError } = await supabase
+        .from("projects")
+        .update(projectUpdate)
+        .eq("id", projectId);
+
+      if (projectError) throw projectError;
+
+      if (isCompleted) {
+        setProjects((current) =>
+          current.filter((p) => p.id !== projectId)
+        );
+
+        setReleased((current) => [
+          ...current,
+          { ...updated, releasedAt: Date.now() },
+        ]);
+
+        setSelectedProject(null);
+      } else {
+        setProjects((current) =>
+          current.map((p) => (p.id === projectId ? updated : p))
+        );
+      }
+    } catch (error) {
+      console.error("Error updating project:", error);
+      alert("Couldn't save your progress: " + error.message);
+    }
   }
-
-  
-function toggleItem(projectId, type, itemId) {
-  const project = projects.find((p) => p.id === projectId);
-  if (!project) return;
-
-  const updated = {
-    ...project,
-    [type]: project[type].map((item) =>
-      item.id === itemId ? { ...item, done: !item.done } : item
-    ),
-    lastFed: Date.now(),
-  };
-
-  const progress = getProgress(updated);
-  const growthStage = getGrowthStage(progress);
-
-  if (
-    progress === 100 &&
-    updated.tasks.length + updated.milestones.length > 0
-  ) {
-    setProjects((current) =>
-      current.filter((p) => p.id !== projectId)
-    );
-
-    setReleased((current) => [
-      ...current,
-      { ...updated, releasedAt: Date.now() },
-    ]);
-
-    setSelectedProject(null);
-  } else {
-    setProjects((current) =>
-      current.map((p) => (p.id === projectId ? updated : p))
-    );
-  }
-}
 
   function deleteProject(id) {
     setProjects((current) => current.filter((project) => project.id !== id));
@@ -226,6 +441,37 @@ function toggleItem(projectId, type, itemId) {
 
   const activeGrowthStage = getGrowthStage(activeProgress);
 
+  if (authLoading) {
+  return (
+    <main className="app-shell">
+      <p>Loading your little aquarium...</p>
+    </main>
+  );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
+
+  if (projectsLoading) {
+    return (
+      <main className="app-shell">
+        <p>Loading your little aquarium...</p>
+      </main>
+    );
+  }
+
+  if (projectsError) {
+    return (
+      <main className="app-shell">
+        <p>We couldn't load your aquarium: {projectsError}</p>
+        <button onClick={() => window.location.reload()}>
+          Try again
+        </button>
+      </main>
+    );
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -233,8 +479,36 @@ function toggleItem(projectId, type, itemId) {
           <span className="brand-icon">✳</span>
           <span>little things</span>
         </div>
-        <div className="top-note">a little progress, every day</div>
+
+        <div className="topbar-right">
+          <div className="top-note">a little progress, every day</div>
+          <button
+            className="logout-button"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Log out
+          </button>
+        </div>
       </header>
+
+      <nav className="main-navigation">
+        <button
+          className={activeTab === "aquarium" ? "active" : ""}
+          onClick={() => setActiveTab("aquarium")}
+        >
+          🐠 My Aquarium
+        </button>
+
+        <button
+          className={activeTab === "friends" ? "active" : ""}
+          onClick={() => setActiveTab("friends")}
+        >
+          ♡ Friends
+        </button>
+      </nav>
+
+      {activeTab === "aquarium" ? (
+        <>
 
       <section className="welcome">
         <p className="eyebrow">YOUR LITTLE CORNER OF THE WORLD</p>
@@ -432,6 +706,17 @@ function toggleItem(projectId, type, itemId) {
                 value={newDescription}
                 onChange={(event) => setNewDescription(event.target.value)}
               />
+              <label>
+                Project privacy
+                <select
+                  value={newVisibility}
+                  onChange={(event) => setNewVisibility(event.target.value)}
+                >
+                  <option value="private">Private — only me</option>
+                  <option value="friends">Friends — accepted friends</option>
+                  <option value="public">Public — all signed-in users</option>
+                </select>
+              </label>
               <button className="primary-button full-button" type="submit">
                 Hatch my fish ✨
               </button>
@@ -450,6 +735,20 @@ function toggleItem(projectId, type, itemId) {
             <p className="modal-description">
               {activeProject.description || "Every little step counts."}
             </p>
+            <div className="project-privacy">
+              <label htmlFor="project-visibility">Project privacy</label>
+              <select
+                id="project-visibility"
+                value={activeProject.visibility || "private"}
+                onChange={(event) =>
+                  changeProjectVisibility(activeProject.id, event.target.value)
+                }
+              >
+                <option value="private">Private — only me</option>
+                <option value="friends">Friends — accepted friends</option>
+                <option value="public">Public — all signed-in users</option>
+              </select>
+            </div>
 
         <div className="fish-growth-card">
           <div className="growth-stage-header">
@@ -545,6 +844,11 @@ function toggleItem(projectId, type, itemId) {
         </div>
       )}
 
+        </>
+      ) : (
+        <Friends />
+      )}
+      
       <footer>
         made with a little love <span>♡</span>
       </footer>
