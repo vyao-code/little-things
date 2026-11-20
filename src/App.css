@@ -1349,3 +1349,36 @@ footer span {
     font-size: 0.85rem;
   }
 }
+
+.daily-food-section {
+  background: #f0f8f8;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.daily-food-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.daily-food-heading p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #6b8585;
+}
+
+.daily-food-heading span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #477d78;
+}
+
+.empty-habits {
+  color: #789090;
+  font-size: 0.9rem;
+}

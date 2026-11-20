@@ -35,13 +35,15 @@ function formatProjectFromDatabase(project, items = []) {
   };
 }
 
-function getMood(project) {
+function getMood(project, missedDailyHabits = false) {
+  if (missedDailyHabits) return "hungry";
+
   const daysSinceFed =
     (Date.now() - project.lastFed) / (1000 * 60 * 60 * 24);
 
-  if (daysSinceFed >= 7) return "sick";
-  if (daysSinceFed >= 4) return "hungry";
-  if (daysSinceFed >= 2) return "sleepy";
+  if (daysSinceFed >= 3) return "dying";
+  if (daysSinceFed >= 2) return "sick";
+  if (daysSinceFed >= 1) return "hungry";
   return "happy";
 }
 
@@ -187,6 +189,10 @@ function App() {
   const [newDescription, setNewDescription] = useState("");
   const [newTask, setNewTask] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
+  const [dailyHabits, setDailyHabits] = useState([]);
+  const [newDailyHabit, setNewDailyHabit] = useState("");
+  const [dailyHabitsLoading, setDailyHabitsLoading] = useState(false);
+  const [missedDailyHabits, setMissedDailyHabits] = useState(false);
 
   async function changeProjectVisibility(projectId, visibility) {
     try {
@@ -252,6 +258,78 @@ function App() {
         project.id === id ? updater(project) : project
       )
     );
+  }
+
+  async function toggleDailyHabit(habit) {
+    const today = [
+      new Date().getFullYear(),
+      String(new Date().getMonth() + 1).padStart(2, "0"),
+      String(new Date().getDate()).padStart(2, "0"),
+    ].join("-");
+
+    try {
+      if (habit.completedToday) {
+        const { error } = await supabase
+          .from("daily_habit_completions")
+          .delete()
+          .eq("habit_id", habit.id)
+          .eq("completed_on", today);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("daily_habit_completions")
+          .insert({
+            habit_id: habit.id,
+            completed_on: today,
+          });
+
+        if (error) throw error;
+      }
+
+      setDailyHabits((current) =>
+        current.map((item) =>
+          item.id === habit.id
+            ? { ...item, completedToday: !item.completedToday }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error updating daily habit:", error);
+      alert("Couldn't update your daily habit: " + error.message);
+    }
+  }
+
+  async function addDailyHabit(event) {
+    event.preventDefault();
+
+    if (!newDailyHabit.trim() || !selectedProject) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("daily_habits")
+        .insert({
+          project_id: selectedProject.id,
+          title: newDailyHabit.trim(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setDailyHabits((current) => [
+        ...current,
+        {
+          ...data,
+          completedToday: false,
+        },
+      ]);
+
+      setNewDailyHabit("");
+    } catch (error) {
+      console.error("Error adding daily habit:", error);
+      alert("Couldn't save your daily habit: " + error.message);
+    }
   }
 
   async function addTask(event) {
@@ -441,6 +519,88 @@ function App() {
 
   const activeGrowthStage = getGrowthStage(activeProgress);
 
+  useEffect(() => {
+    if (!activeProject) {
+      setDailyHabits([]);
+      return;
+    }
+
+    async function loadDailyHabits() {
+      setDailyHabitsLoading(true);
+
+      try {
+        const { data: habits, error: habitsError } = await supabase
+          .from("daily_habits")
+          .select("*")
+          .eq("project_id", activeProject.id)
+          .order("created_at", { ascending: true });
+
+        if (habitsError) throw habitsError;
+
+        const habitIds = habits.map((habit) => habit.id);
+
+        const getDateString = (date) =>
+          [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, "0"),
+            String(date.getDate()).padStart(2, "0"),
+          ].join("-");
+
+        const today = getDateString(new Date());
+
+        const yesterdayDate = new Date();
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+        const yesterday = getDateString(yesterdayDate);
+
+        let completions = [];
+
+        if (habitIds.length > 0) {
+          const { data, error } = await supabase
+            .from("daily_habit_completions")
+            .select("*")
+            .in("habit_id", habitIds)
+            .in("completed_on", [today, yesterday]);
+
+          if (error) throw error;
+
+          completions = data || [];
+        }
+
+        setDailyHabits(
+          habits.map((habit) => ({
+            ...habit,
+            completedToday: completions.some(
+              (completion) =>
+                completion.habit_id === habit.id &&
+                completion.completed_on === today
+            ),
+          }))
+        );
+
+        const yesterdayStart = new Date(`${yesterday}T00:00:00`);
+
+        setMissedDailyHabits(
+          habits.some(
+            (habit) =>
+              new Date(habit.created_at) < yesterdayStart &&
+              !completions.some(
+                (completion) =>
+                  completion.habit_id === habit.id &&
+                  completion.completed_on === yesterday
+              )
+          )
+        );
+      } catch (error) {
+        console.error("Error loading daily habits:", error);
+        alert("Couldn't load daily habits: " + error.message);
+      } finally {
+        setDailyHabitsLoading(false);
+      }
+    }
+
+    loadDailyHabits();
+  }, [activeProject?.id]);
+
   if (authLoading) {
   return (
     <main className="app-shell">
@@ -588,7 +748,10 @@ function App() {
             </div>
 
             {projects.map((project, index) => {
-              const mood = getMood(project);
+              const mood = getMood(
+                project,
+                project.id === activeProject?.id && missedDailyHabits
+              );
               const progress = getProgress(project);
               const growthStage = getGrowthStage(progress);
 
@@ -735,19 +898,62 @@ function App() {
             <p className="modal-description">
               {activeProject.description || "Every little step counts."}
             </p>
+            
             <div className="project-privacy">
-              <label htmlFor="project-visibility">Project privacy</label>
-              <select
-                id="project-visibility"
-                value={activeProject.visibility || "private"}
-                onChange={(event) =>
-                  changeProjectVisibility(activeProject.id, event.target.value)
-                }
-              >
-                <option value="private">Private — only me</option>
-                <option value="friends">Friends — accepted friends</option>
-                <option value="public">Public — all signed-in users</option>
-              </select>
+              <h3>Who can see this project?</h3>
+
+              <div className="privacy-options">
+                <label className={`privacy-option private-option ${
+                  activeProject.visibility === "private" ? "selected" : ""
+                }`}>
+                  <input
+                    type="radio"
+                    name="project-visibility"
+                    value="private"
+                    checked={activeProject.visibility === "private"}
+                    onChange={() =>
+                      changeProjectVisibility(activeProject.id, "private")
+                    }
+                  />
+                  <span className="privacy-icon">🔒</span>
+                  <strong>Private</strong>
+                  <small>Only you</small>
+                </label>
+
+                <label className={`privacy-option friends-option ${
+                  activeProject.visibility === "friends" ? "selected" : ""
+                }`}>
+                  <input
+                    type="radio"
+                    name="project-visibility"
+                    value="friends"
+                    checked={activeProject.visibility === "friends"}
+                    onChange={() =>
+                      changeProjectVisibility(activeProject.id, "friends")
+                    }
+                  />
+                  <span className="privacy-icon">🐟</span>
+                  <strong>Friends</strong>
+                  <small>Accepted friends</small>
+                </label>
+
+                <label className={`privacy-option public-option ${
+                  activeProject.visibility === "public" ? "selected" : ""
+                }`}>
+                  <input
+                    type="radio"
+                    name="project-visibility"
+                    value="public"
+                    checked={activeProject.visibility === "public"}
+                    onChange={() =>
+                      changeProjectVisibility(activeProject.id, "public")
+                    }
+                  />
+                  <span className="privacy-icon">🌎</span>
+                  <strong>Public</strong>
+                  <small>All signed-in users</small>
+                </label>
+              </div>
             </div>
 
         <div className="fish-growth-card">
@@ -785,7 +991,49 @@ function App() {
               : "Your fish is ready to swim free!"}
           </p>
         </div>
+            <div className="task-section daily-food-section">
+              <div className="daily-food-heading">
+                <div>
+                  <h3>🐠 Daily Fish Food</h3>
+                  <p>Little habits that keep your fish happy and healthy.</p>
+                </div>
+                <span>
+                  {dailyHabits.filter((habit) => habit.completedToday).length}
+                  {" / "}
+                  {dailyHabits.length} fed
+                </span>
+              </div>
 
+              {dailyHabitsLoading ? (
+                <p>Preparing today's fish food...</p>
+              ) : dailyHabits.length === 0 ? (
+                <p className="empty-habits">
+                  Your fish is waiting for its first daily habit! 🫧
+                </p>
+              ) : (
+                dailyHabits.map((habit) => (
+                  <div className="task-row" key={habit.id}>
+                    <input
+                      type="checkbox"
+                      checked={habit.completedToday}
+                      onChange={() => toggleDailyHabit(habit)}
+                    />
+                    <span className={habit.completedToday ? "completed" : ""}>
+                      {habit.title}
+                    </span>
+                  </div>
+                ))
+              )}
+
+              <form className="add-item-form" onSubmit={addDailyHabit}>
+                <input
+                  placeholder="e.g. Go for a run every day..."
+                  value={newDailyHabit}
+                  onChange={(event) => setNewDailyHabit(event.target.value)}
+                />
+                <button type="submit">+</button>
+              </form>
+            </div>
             <div className="task-section">
               <h3>Little tasks</h3>
               {activeProject.tasks.map((task) => (
@@ -831,10 +1079,10 @@ function App() {
             </div>
 
             <div className="care-note">
-              {getMood(activeProject) === "happy" && "Your fish is happy. Keep up the lovely work! 💛"}
-              {getMood(activeProject) === "sleepy" && "Your fish is getting sleepy. Check in when you can. 💤"}
-              {getMood(activeProject) === "hungry" && "Your fish is hungry! Complete a little task to feed it. 🫧"}
-              {getMood(activeProject) === "sick" && "Your fish misses you. A little attention can help it feel better. 💙"}
+              {getMood(activeProject, missedDailyHabits) === "happy" && "Your fish is happy. Keep up the lovely work! 💛"}
+              {getMood(activeProject, missedDailyHabits) === "hungry" && "Your fish is getting sleepy. Check in when you can. 💤"}
+              {getMood(activeProject, missedDailyHabits) === "sick" && "Your fish is hungry! Complete a little task to feed it. 🫧"}
+              {getMood(activeProject, missedDailyHabits) === "dying" && "Your fish misses you. A little attention can help it feel better. 💙"}
             </div>
 
             <button className="delete-button" onClick={() => deleteProject(activeProject.id)}>
