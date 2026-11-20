@@ -869,17 +869,20 @@ function App() {
                 value={newDescription}
                 onChange={(event) => setNewDescription(event.target.value)}
               />
-              <label>
-                Project privacy
+              <div className="project-privacy">
+                <label htmlFor="new-project-visibility">
+                  Project privacy
+                </label>
                 <select
+                  id="new-project-visibility"
                   value={newVisibility}
                   onChange={(event) => setNewVisibility(event.target.value)}
                 >
-                  <option value="private">Private — only me</option>
-                  <option value="friends">Friends — accepted friends</option>
-                  <option value="public">Public — all signed-in users</option>
+                  <option value="private">🔒 Private — only me</option>
+                  <option value="friends">🐟 Friends — accepted friends</option>
+                  <option value="public">🫧 Public — all signed-in users</option>
                 </select>
-              </label>
+              </div>
               <button className="primary-button full-button" type="submit">
                 Hatch my fish ✨
               </button>
